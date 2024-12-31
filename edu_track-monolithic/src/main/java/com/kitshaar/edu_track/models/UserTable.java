@@ -97,7 +97,7 @@ public class UserTable {
 		return hashPassword;
 	}
 
-	public void setHash_password(String hash_password) {
+	public void setHashPassword(String hash_password) {
 		this.hashPassword = hash_password;
 	}
 

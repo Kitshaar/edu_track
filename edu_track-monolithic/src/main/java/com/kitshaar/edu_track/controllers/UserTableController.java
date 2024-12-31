@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -45,8 +46,11 @@ public class UserTableController {
 	}
 	
 //	PUT /users/{id} - Update an existing user.
-//	@PutMapping("users/{id}")
-	
+	@PutMapping("users/{id}")
+	public ResponseEntity<String> updateUser(@PathVariable Integer id, @RequestBody UserTable user)
+	{
+		return service.updateUser(id, user);
+	}	
 	
 	
 //	DELETE /users/{id} - Delete a user.

@@ -25,10 +25,10 @@ public class School {
 	private String address; 
 	
 	@Column(name = "phone_no", nullable=false)
-	private Integer phoneNo;
+	private String phoneNo;
 
-	public School(Integer id, Integer schoolId, String schoolName, String address, Integer phoneNo) {
-		super();
+	public School(Integer id, Integer schoolId, String schoolName, String address, String phoneNo) {
+	
 		this.id = id;
 		this.schoolId = schoolId;
 		this.schoolName = schoolName;
@@ -37,7 +37,7 @@ public class School {
 	}
 
 	public School() {
-		super();
+
 	}
 
 	public Integer getId() {
@@ -72,11 +72,11 @@ public class School {
 		this.address = address;
 	}
 
-	public Integer getPhoneNo() {
+	public String getPhoneNo() {
 		return phoneNo;
 	}
 
-	public void setPhoneNo(Integer phoneNo) {
+	public void setPhoneNo(String phoneNo) {
 		this.phoneNo = phoneNo;
 	}
 
