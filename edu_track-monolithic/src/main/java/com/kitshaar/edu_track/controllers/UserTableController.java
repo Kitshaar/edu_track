@@ -8,13 +8,11 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.kitshaar.edu_track.models.UserTable;
-import com.kitshaar.edu_track.models.User_table;
 import com.kitshaar.edu_track.service.UserTableService;
 
 @RestController
@@ -26,22 +24,23 @@ public class UserTableController {
 	
 //	GET /users - Get all users.
 	@GetMapping("users")
-	public ResponseEntity<List<User_table>> getAllUsers()
+	public ResponseEntity<List<UserTable>> getAllUsers()
 	{
 		return service.getAllUsers(); 
 	}
 	
 //	GET /users/{id} - Get user by ID.
 	@GetMapping("users/{id}")
-	public ResponseEntity<User_table> getUser(@PathVariable Integer id)
+	public ResponseEntity<UserTable> getUser(@PathVariable Integer id)
 	{
 		return service.getUser(id); 
 	}
 	
 //	POST /users - Create a new user.
 	@PostMapping("users")
-	public ResponseEntity<String> addUser(@RequestBody User_table user)
+	public ResponseEntity<String> addUser(@RequestBody UserTable user)
 	{
+		System.out.println("In controller");
 		return service.addUser(user); 
 	}
 	
