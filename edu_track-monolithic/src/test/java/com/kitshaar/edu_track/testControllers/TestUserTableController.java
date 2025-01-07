@@ -247,57 +247,131 @@ public class TestUserTableController {
                 .andExpect(content().string("Entity being sent is null. It is not allowed"));
     }
 
+
     @Test
-    public void addUser_optimisticLockingFailure_failure() throws Exception {
-        UserTable userTable = UserTable.builder()
-                .id(6)
-                .name("Kit")
-                .email("Kit.adams@example.com")
-                .password("kitpassword")
-                .hashPassword("hashedkitpassword")
+    public void updateUser_success() throws Exception {
+        UserTable updatedUser = UserTable.builder()
+                .id(1)
+                .name("New Name")
+                .email("new.email@example.com")
+                .password("newpassword")
+                .hashPassword("hashedNewPassword")
                 .role("ADMIN")
                 .build();
-        Mockito.when(userTableService.addUser(userTable))
-                .thenReturn(new ResponseEntity<>("Optimistic Locking Failure: Entity version mismatch or entity not found.", HttpStatus.CONFLICT));
 
-        String content = objectWriter.writeValueAsString(userTable);
+        Mockito.when(userTableService.updateUser(1, updatedUser))
+                .thenReturn(new ResponseEntity<>("User updated successfully.", HttpStatus.OK));
+
+        String content = objectWriter.writeValueAsString(updatedUser);
+
         mockMvc.perform(MockMvcRequestBuilders
-                        .post("/admin/users")
+                        .put("/admin/users/{id}", 1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(content))
-                .andExpect(status().isConflict())
-                .andExpect(content().string("Optimistic Locking Failure: Entity version mismatch or entity not found."));
+                .andExpect(status().isOk())
+                .andExpect(content().string("User updated successfully."));
 
-        Mockito.verify(userTableService, Mockito.times(1)).addUser(userTable);
+        Mockito.verify(userTableService, Mockito.times(1)).updateUser(1, updatedUser);
     }
 
     @Test
-    public void addUser_internalServerError_failure() throws Exception {
-        UserTable userTable = UserTable.builder()
-                .id(6)
-                .name("Kit")
-                .email("Kit.adams@example.com")
-                .password("kitpassword")
-                .hashPassword("hashedkitpassword")
-                .role("ADMIN")
+    public void updateUser_notFullUserObjectProvided_success() throws Exception {
+        UserTable updatedUser = UserTable.builder()
+                .email("new.kit@example.com")
                 .build();
-        Mockito.when(userTableService.addUser(userTable))
-                .thenReturn(new ResponseEntity<>("An error occurred while processing the request.", HttpStatus.INTERNAL_SERVER_ERROR));
 
-        String content = objectWriter.writeValueAsString(userTable);
+        Mockito.when(userTableService.updateUser(1, updatedUser))
+                .thenReturn(new ResponseEntity<>("User updated successfully.", HttpStatus.OK));
+
+        String content = objectWriter.writeValueAsString(updatedUser);
+
         mockMvc.perform(MockMvcRequestBuilders
-                        .post("/admin/users")
+                        .put("/admin/users/{id}", 1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(content))
-                .andExpect(status().isInternalServerError())
-                .andExpect(content().string("An error occurred while processing the request."));
+                .andExpect(status().isOk())
+                .andExpect(content().string("User updated successfully."));
 
-        Mockito.verify(userTableService, Mockito.times(1)).addUser(userTable);
+        Mockito.verify(userTableService, Mockito.times(1)).updateUser(1, updatedUser);
     }
 
+    @Test
+    public void updateUser_invalidId_failure() throws Exception {
+        UserTable updatedUser = UserTable.builder()
+                .id(1)
+                .name("New Name")
+                .email("new.email@example.com")
+                .password("newpassword")
+                .hashPassword("hashedNewPassword")
+                .role("ADMIN")
+                .build();
 
+        Mockito.when(userTableService.updateUser(999, updatedUser))
+                .thenReturn(new ResponseEntity<>("Id being sent is null or doesn't exist. It is not allowed", HttpStatus.BAD_REQUEST));
 
+        String content = objectWriter.writeValueAsString(updatedUser);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .put("/admin/users/{id}", 999)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(content))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("Id being sent is null or doesn't exist. It is not allowed"));
+
+        Mockito.verify(userTableService, Mockito.times(1)).updateUser(999, updatedUser);
+    }
+
+    @Test
+    public void updateUser_nullUser_failure() throws Exception {
+        Mockito.when(userTableService.updateUser(1, new UserTable()))
+                .thenReturn(new ResponseEntity<>("Entity being sent is null. It is not allowed", HttpStatus.BAD_REQUEST));
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .put("/admin/users/{id}", 1)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content("{}")) // Empty request body to simulate null user
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("Entity being sent is null. It is not allowed"));
+
+        Mockito.verify(userTableService, Mockito.times(1)).updateUser(1, new UserTable());
+    }
+
+    @Test
+    public void deleteUser_success() throws Exception {
+        Integer userId = 1;
+
+        // Mocking the service behavior
+        Mockito.when(userTableService.deleteUser(userId))
+                .thenReturn(new ResponseEntity<>("Successful deletion", HttpStatus.OK));
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .delete("/admin/users/{id}", userId)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().string("Successful deletion"));
+
+        Mockito.verify(userTableService, Mockito.times(1)).deleteUser(userId);
+    }
+
+    @Test
+    public void deleteUser_userNotFound() throws Exception {
+        Integer userId = 999; // ID that does not exist in the database
+
+        // Mocking the service behavior to return "User not found"
+        Mockito.when(userTableService.deleteUser(userId))
+                .thenReturn(new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND));
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .delete("/admin/users/{id}", userId)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string("User not found"));
+
+        Mockito.verify(userTableService, Mockito.times(1)).deleteUser(userId);
+    }
 
 }
