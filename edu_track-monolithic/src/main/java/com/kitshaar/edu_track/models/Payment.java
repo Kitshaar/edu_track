@@ -13,7 +13,15 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 @Table(name="payment")
 public class Payment {
@@ -39,79 +47,7 @@ public class Payment {
 	private LocalDate dueDate; 
 	
 	@Column(nullable=false)
-	private String status; 
-	
-	public Payment(Integer id, Integer paymentId, Integer schoolId, OffsetDateTime createdAt, Integer amount,
-			LocalDate dueDate, String status) {
-		super();
-		this.id = id;
-		this.paymentId = paymentId;
-		this.schoolId = schoolId;
-		this.createdAt = createdAt;
-		this.amount = amount;
-		this.dueDate = dueDate;
-		this.status = status;
-	}
-
-	public Payment() {
-		super();
-	}
-
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	public Integer getPaymentId() {
-		return paymentId;
-	}
-
-	public void setPaymentId(Integer paymentId) {
-		this.paymentId = paymentId;
-	}
-
-	public Integer getSchoolId() {
-		return schoolId;
-	}
-
-	public void setSchoolId(Integer schoolId) {
-		this.schoolId = schoolId;
-	}
-
-	public OffsetDateTime getCreatedAt() {
-		return createdAt;
-	}
-
-	public void setCreatedAt(OffsetDateTime createdAt) {
-		this.createdAt = createdAt;
-	}
-
-	public Integer getAmount() {
-		return amount;
-	}
-
-	public void setAmount(Integer amount) {
-		this.amount = amount;
-	}
-
-	public LocalDate getDueDate() {
-		return dueDate;
-	}
-
-	public void setDueDate(LocalDate dueDate) {
-		this.dueDate = dueDate;
-	}
-
-	public String getStatus() {
-		return status;
-	}
-
-	public void setStatus(String status) {
-		this.status = status;
-	}
+	private String status;
 
 	@Override
 	public String toString() {

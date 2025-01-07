@@ -6,7 +6,15 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "school")
 public class School {
@@ -26,59 +34,6 @@ public class School {
 	
 	@Column(name = "phone_no", nullable=false)
 	private String phoneNo;
-
-	public School(Integer id, Integer schoolId, String schoolName, String address, String phoneNo) {
-	
-		this.id = id;
-		this.schoolId = schoolId;
-		this.schoolName = schoolName;
-		this.address = address;
-		this.phoneNo = phoneNo;
-	}
-
-	public School() {
-
-	}
-
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	public Integer getSchoolId() {
-		return schoolId;
-	}
-
-	public void setSchoolId(Integer schoolId) {
-		this.schoolId = schoolId;
-	}
-
-	public String getSchoolName() {
-		return schoolName;
-	}
-
-	public void setSchoolName(String schoolName) {
-		this.schoolName = schoolName;
-	}
-
-	public String getAddress() {
-		return address;
-	}
-
-	public void setAddress(String address) {
-		this.address = address;
-	}
-
-	public String getPhoneNo() {
-		return phoneNo;
-	}
-
-	public void setPhoneNo(String phoneNo) {
-		this.phoneNo = phoneNo;
-	}
 
 	@Override
 	public String toString() {

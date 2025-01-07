@@ -13,7 +13,15 @@ import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "user_table") // Maps to the exact table name
 public class UserTable {
@@ -44,86 +52,6 @@ public class UserTable {
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
 	@Column(nullable = false)
 	private String role;
-
-	public UserTable() {
-
-	}
-
-	public UserTable(Integer id, String name, String email, String password, String hash_password,
-			OffsetDateTime createdAt, LocalDate updatedAt, String role) {
-		this.id = id;
-		this.name = name;
-		this.email = email;
-		this.password = password;
-		this.hashPassword = hash_password;
-		this.createdAt = createdAt;
-		this.updatedAt = updatedAt;
-		this.role = role;
-	}
-
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
-	public String getHashPassword() {
-		return hashPassword;
-	}
-
-	public void setHashPassword(String hash_password) {
-		this.hashPassword = hash_password;
-	}
-
-	public OffsetDateTime getCreatedAt() {
-		return createdAt;
-	}
-
-	public void setCreatedAt(OffsetDateTime createdAt) {
-		this.createdAt = createdAt;
-	}
-
-	public LocalDate getUpdatedAt() {
-		return updatedAt;
-	}
-
-	public void setUpdatedAt(LocalDate updatedAt) {
-		this.updatedAt = updatedAt;
-	}
-
-	public String getRole() {
-		return role;
-	}
-
-	public void setRole(String role) {
-		this.role = role;
-	}
 
 	@Override
 	public String toString() {

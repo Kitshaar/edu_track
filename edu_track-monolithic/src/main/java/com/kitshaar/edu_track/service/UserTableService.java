@@ -48,14 +48,18 @@ public class UserTableService {
 		try {
 
 			repo.save(user); // Try to save the user
+			System.out.println("Created Successfully");
 			return new ResponseEntity<>("Success", HttpStatus.CREATED);
+
 		} catch (OptimisticLockingFailureException e) {
 			// Handle OptimisticLockingFailureException
+			System.out.println("Locking Failure");
 			return new ResponseEntity<>("Optimistic Locking Failure: Entity version mismatch or entity not found.",
 					HttpStatus.CONFLICT);
 		} catch (Exception e) {
 			// Catch any other exceptions that might occur
 			e.printStackTrace();
+			System.out.println("Exception");
 			return new ResponseEntity<>("An error occurred while processing the request.",
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
