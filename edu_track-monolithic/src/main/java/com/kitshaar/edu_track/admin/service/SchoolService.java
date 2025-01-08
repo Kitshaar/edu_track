@@ -1,8 +1,7 @@
-package com.kitshaar.edu_track.service;
+package com.kitshaar.edu_track.admin.service;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.kitshaar.edu_track.admin.models.School;
+import com.kitshaar.edu_track.admin.repositories.SchoolRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.http.HttpStatus;
@@ -10,16 +9,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.kitshaar.edu_track.models.School;
-import com.kitshaar.edu_track.repositories.SchoolRepo;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class SchoolService {
 
 	@Autowired
-	SchoolRepo repo;
+    SchoolRepo repo;
 
-	@Transactional
+	@Transactional(transactionManager = "adminTransactionManager")
 	public ResponseEntity<List<School>> getAllSchools() {
 		try {
 			return new ResponseEntity<>(repo.findAll(), HttpStatus.OK);
@@ -29,7 +28,7 @@ public class SchoolService {
 		return new ResponseEntity<>(new ArrayList<>(), HttpStatus.BAD_REQUEST);
 	}
 
-	@Transactional
+	@Transactional(transactionManager = "adminTransactionManager")
 	public ResponseEntity<School> getSchool(Integer id) {
 		try {
 			return new ResponseEntity<>(repo.findById(id).get(), HttpStatus.OK);
@@ -39,7 +38,7 @@ public class SchoolService {
 		return new ResponseEntity<>(new School(), HttpStatus.BAD_REQUEST);
 	}
 
-	@Transactional
+	@Transactional(transactionManager = "adminTransactionManager")
 	public ResponseEntity<String> addSchool(School school) {
 		if (school == null) {
 			return new ResponseEntity<>("Entity being sent is null. It is not allowed", HttpStatus.BAD_REQUEST);
@@ -66,7 +65,7 @@ public class SchoolService {
 		}
 	}
 
-	@Transactional
+	@Transactional(transactionManager = "adminTransactionManager")
 	public ResponseEntity<String> updateSchool(Integer id, School school) {
 		if (id == null || !repo.existsById(id)) {
 			return new ResponseEntity<>("Id being sent is null or doesn't exist. It is not allowed",
@@ -112,7 +111,7 @@ public class SchoolService {
 
 	}
 
-	@Transactional
+	@Transactional(transactionManager = "adminTransactionManager")
 	public ResponseEntity<String> deleteSchool(Integer id) {
 		if (id == null) {
 			return new ResponseEntity<>("Id being sent is null. It is not allowed", HttpStatus.BAD_REQUEST);

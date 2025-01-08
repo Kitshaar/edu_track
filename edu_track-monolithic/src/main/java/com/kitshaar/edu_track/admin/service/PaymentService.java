@@ -1,8 +1,7 @@
-package com.kitshaar.edu_track.service;
+package com.kitshaar.edu_track.admin.service;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.kitshaar.edu_track.admin.models.Payment;
+import com.kitshaar.edu_track.admin.repositories.PaymentRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.http.HttpStatus;
@@ -10,16 +9,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.kitshaar.edu_track.models.Payment;
-import com.kitshaar.edu_track.repositories.PaymentRepo;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class PaymentService {
 
 	@Autowired
-	PaymentRepo repo;
+    PaymentRepo repo;
 
-	@Transactional
+	@Transactional(transactionManager = "adminTransactionManager")
 	public ResponseEntity<List<Payment>> getAllPayments() {
 		try {
 			return new ResponseEntity<>(repo.findAll(), HttpStatus.OK);
@@ -29,7 +28,7 @@ public class PaymentService {
 		return new ResponseEntity<>(new ArrayList<>(), HttpStatus.BAD_REQUEST);
 	}
 
-	@Transactional
+	@Transactional(transactionManager = "adminTransactionManager")
 	public ResponseEntity<Payment> getPayment(Integer id) {
 		try {
 			return new ResponseEntity<>(repo.findById(id).get(), HttpStatus.OK);
@@ -39,7 +38,7 @@ public class PaymentService {
 		return new ResponseEntity<>(new Payment(), HttpStatus.BAD_REQUEST);
 	}
 
-	@Transactional
+	@Transactional(transactionManager = "adminTransactionManager")
 	public ResponseEntity<String> addPayment(Payment payment) {
 		if (payment == null) {
 			return new ResponseEntity<>("Entity being sent is null. It is not allowed", HttpStatus.BAD_REQUEST);
@@ -60,7 +59,7 @@ public class PaymentService {
 		}
 	}
 
-	@Transactional
+	@Transactional(transactionManager = "adminTransactionManager")
 	public ResponseEntity<String> updatePayment(Integer id, Payment payment) {
 		if (id == null || !repo.existsById(id)) {
 			return new ResponseEntity<>("Id being sent is null or doesn't exist. It is not allowed",
@@ -100,7 +99,7 @@ public class PaymentService {
 		}
 	}
 
-	@Transactional
+	@Transactional(transactionManager = "adminTransactionManager")
 	public ResponseEntity<String> deletePayment(Integer id) {
 		if (id == null) {
 			return new ResponseEntity<>("Id being sent is null. It is not allowed", HttpStatus.BAD_REQUEST);

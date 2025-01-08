@@ -1,9 +1,7 @@
-package com.kitshaar.edu_track.service;
+package com.kitshaar.edu_track.admin.service;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-
+import com.kitshaar.edu_track.admin.models.UserTable;
+import com.kitshaar.edu_track.admin.repositories.UserTableRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.http.HttpStatus;
@@ -11,16 +9,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.kitshaar.edu_track.models.UserTable;
-import com.kitshaar.edu_track.repositories.UserTableRepo;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class UserTableService {
 
 	@Autowired
-	UserTableRepo repo;
+    UserTableRepo repo;
 
-	@Transactional
+	@Transactional(transactionManager = "adminTransactionManager")
 	public ResponseEntity<List<UserTable>> getAllUsers() {
 		try {
 			return new ResponseEntity<>(repo.findAll(), HttpStatus.OK);
@@ -30,7 +29,7 @@ public class UserTableService {
 		return new ResponseEntity<>(new ArrayList<>(), HttpStatus.BAD_REQUEST);
 	}
 
-	@Transactional
+	@Transactional(transactionManager = "adminTransactionManager")
 	public ResponseEntity<UserTable> getUser(Integer id) {
 		try {
 			return new ResponseEntity<>(repo.findById(id).get(), HttpStatus.OK);
@@ -40,7 +39,7 @@ public class UserTableService {
 		return new ResponseEntity<>(new UserTable(), HttpStatus.BAD_REQUEST);
 	}
 
-	@Transactional
+	@Transactional(transactionManager = "adminTransactionManager")
 	public ResponseEntity<String> addUser(UserTable user) {
 		if (user == null) {
 			return new ResponseEntity<>("Entity being sent is null. It is not allowed", HttpStatus.BAD_REQUEST);
@@ -65,7 +64,7 @@ public class UserTableService {
 		}
 	}
 
-	@Transactional
+	@Transactional(transactionManager = "adminTransactionManager")
 	public ResponseEntity<String> deleteUser(Integer id) {
 		if (id == null) {
 			return new ResponseEntity<>("Id being sent is null. It is not allowed", HttpStatus.BAD_REQUEST);
@@ -88,7 +87,7 @@ public class UserTableService {
 		}
 	}
 
-	@Transactional
+	@Transactional(transactionManager = "adminTransactionManager")
 	public ResponseEntity<String> updateUser(Integer id, UserTable user) {
 		if (id == null || !repo.existsById(id)) {
 			return new ResponseEntity<>("Id being sent is null or doesn't exist. It is not allowed",

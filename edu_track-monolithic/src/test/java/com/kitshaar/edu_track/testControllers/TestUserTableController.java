@@ -2,10 +2,10 @@ package com.kitshaar.edu_track.testControllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import com.kitshaar.edu_track.controllers.UserTableController;
-import com.kitshaar.edu_track.models.UserTable;
-import com.kitshaar.edu_track.service.UserTableService;
-import org.hamcrest.Matchers;
+
+import com.kitshaar.edu_track.admin.controllers.UserTableController;
+import com.kitshaar.edu_track.admin.models.UserTable;
+import com.kitshaar.edu_track.admin.service.UserTableService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
