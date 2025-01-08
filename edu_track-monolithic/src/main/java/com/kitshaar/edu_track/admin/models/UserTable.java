@@ -34,6 +34,7 @@ public class UserTable {
 	@Column(name = "hash_password", nullable = false)
 	private String hashPassword;
 
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
 	@Column(name = "created_at", updatable = false)
 	private OffsetDateTime createdAt;
 
@@ -41,7 +42,6 @@ public class UserTable {
 	@Column(name = "updated_at")
 	private LocalDate updatedAt;
 
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
 	@Column(nullable = false)
 	private String role;
 
