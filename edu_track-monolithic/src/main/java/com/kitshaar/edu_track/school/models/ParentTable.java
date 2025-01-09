@@ -14,7 +14,16 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "parent_table")
+@Table(name = "parent_table",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"phone"}),       // Ensures unique phone numbers
+                @UniqueConstraint(columnNames = {"alt_phone"}),   // Ensures unique alternate phone numbers
+                @UniqueConstraint(columnNames = {"email"})        // Ensures unique emails
+        },
+        indexes = {
+                @Index(name = "idx_parent_phone", columnList = "phone"),       // Index on phone for quick lookups
+                @Index(name = "idx_parent_email", columnList = "email")        // Index on email for quick lookups
+        })
 public class ParentTable {
 
     @Id

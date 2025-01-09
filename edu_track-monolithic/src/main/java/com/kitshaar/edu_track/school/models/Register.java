@@ -15,7 +15,17 @@ import java.time.OffsetDateTime;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "register")
+@Table(name = "register",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"phone"}),       // Ensures unique phone numbers
+                @UniqueConstraint(columnNames = {"alt_phone"}),   // Ensures unique alternate phone numbers
+                @UniqueConstraint(columnNames = {"email"})        // Ensures unique emails
+        },
+        indexes = {
+                @Index(name = "idx_register_class", columnList = "class_id"),  // Index on class_id for quick lookups
+                @Index(name = "idx_register_phone", columnList = "phone"),    // Index on phone for fast searches
+                @Index(name = "idx_register_email", columnList = "email")     // Index on email for fast searches
+        })
 public class Register {
 
     @Id
@@ -35,8 +45,9 @@ public class Register {
     private String email;
     @Column(name = "address", nullable = false)
     private String address;
-    @Column(name = "class_name", nullable = false)
-    private String className;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "class_id", nullable = false) // Foreign Key to ClassTable
+    private ClassTable classTable;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     @Column(name = "created_at", updatable = false)
     private OffsetDateTime createdAt;

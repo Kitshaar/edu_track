@@ -6,12 +6,22 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "student_table")
+@Table(name = "student_table",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"name", "class_id"}) // Ensures unique student names within a class
+        },
+        indexes = {
+                @Index(name = "idx_student_class", columnList = "class_id"), // Index on class_id for faster lookups
+                @Index(name = "idx_student_parent", columnList = "parent_id") // Index on parent_id
+        })
 public class StudentTable {
 
     @Id
