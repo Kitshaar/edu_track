@@ -31,12 +31,11 @@ public class StudentTable {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parent_id", nullable = false) // Foreign Key
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "parent_id", nullable = false, foreignKey = @ForeignKey(name = "FK_student_parent"))
     private ParentTable parent;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "class_id", nullable = false) // Foreign Key
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "class_id", nullable = false, foreignKey = @ForeignKey(name = "FK_student_class"))
     private ClassTable classTable;
-
 }

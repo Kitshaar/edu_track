@@ -13,9 +13,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "attendance_detail",
         indexes = @Index(name = "idx_attendance_student",
-                columnList = "attendance_id, student_id"),
-        uniqueConstraints = @UniqueConstraint(columnNames =
-                {"class_id", "date"}))
+                columnList = "attendance_id, student_id"))
 public class AttendanceDetail {
 
     @Id
