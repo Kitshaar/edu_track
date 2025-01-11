@@ -1,14 +1,15 @@
 package com.kitshaar.edu_track.school.services;
 
 
-import com.kitshaar.edu_track.school.Dto.GetRegisterDto;
-import com.kitshaar.edu_track.school.Dto.RegisterDto;
+import com.kitshaar.edu_track.school.Dto.registers.GetRegisterDto;
+import com.kitshaar.edu_track.school.Dto.registers.RegisterDto;
 import com.kitshaar.edu_track.school.mappers.GetMapping;
 import com.kitshaar.edu_track.school.mappers.InsertMapping;
 import com.kitshaar.edu_track.school.models.ClassTable;
 import com.kitshaar.edu_track.school.models.Register;
 import com.kitshaar.edu_track.school.repositories.ClassTableRepo;
 import com.kitshaar.edu_track.school.repositories.RegisterRepo;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +19,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -107,5 +110,61 @@ public class RegisterService {
             }
     }
 
+
+    @Transactional(transactionManager = "schoolTransactionManager")
+    public ResponseEntity<String> update(Long id, RegisterDto registerDto) {
+
+        if (id == null || id < 1L) {
+            logger.error("Invalid ID: {}", id);
+            return ResponseEntity.badRequest().body("Invalid ID provided");
+        }
+        if (registerDto == null) {
+            logger.error("Invalid register details provided for ID: {}", id);
+            return ResponseEntity.badRequest().body("Invalid register details provided");
+        }
+
+        try {
+            // Check if the register record exists
+            Register existingRegister = registerRepo.findById(id).orElse(null);
+            if (existingRegister == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("Register record with ID " + id + " not found");
+            }
+
+            // Validate and set ClassTable
+            if (registerDto.getClassId() != null && registerDto.getClassId() > 0) {
+                ClassTable classTable = classTableRepo.findById(registerDto.getClassId())
+                        .orElseThrow(() ->
+                                new IllegalArgumentException(
+                                        "Invalid class ID: " + registerDto.getClassId()));
+                existingRegister.setClassTable(classTable);
+            }
+
+            // Update fields in Register
+            existingRegister.setUpdatedAt(LocalDate.now());
+            Optional.ofNullable(registerDto.getName()).ifPresent(existingRegister::setName);
+            Optional.ofNullable(registerDto.getFatherName()).ifPresent(existingRegister::setFName);
+            Optional.ofNullable(registerDto.getMotherName()).ifPresent(existingRegister::setMName);
+            Optional.ofNullable(registerDto.getPhone()).ifPresent(existingRegister::setPhone);
+            Optional.ofNullable(registerDto.getAltPhone()).ifPresent(existingRegister::setAltPhone);
+            Optional.ofNullable(registerDto.getEmail()).ifPresent(existingRegister::setEmail);
+            Optional.ofNullable(registerDto.getAddress()).ifPresent(existingRegister::setAddress);
+
+            // Save the updated register
+            registerRepo.save(existingRegister);
+            return ResponseEntity.ok("Register record updated successfully");
+
+        } catch (IllegalArgumentException e) {
+            logger.error("Invalid input while updating register with ID {}: {}", id, e.getMessage(), e);
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (OptimisticLockingFailureException e) {
+            logger.error("Optimistic locking conflict while updating register with ID {}: {}", id, e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Entity version mismatch");
+        } catch (Exception e) {
+            logger.error("Error while updating register with ID {}: {}", id, e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("An error occurred while updating the register");
+        }
+    }
 
 }

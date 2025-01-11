@@ -1,6 +1,6 @@
 package com.kitshaar.edu_track.school.mappers;
 
-import com.kitshaar.edu_track.school.Dto.RegisterDto;
+import com.kitshaar.edu_track.school.Dto.registers.RegisterDto;
 import com.kitshaar.edu_track.school.models.ClassTable;
 import com.kitshaar.edu_track.school.models.Register;
 

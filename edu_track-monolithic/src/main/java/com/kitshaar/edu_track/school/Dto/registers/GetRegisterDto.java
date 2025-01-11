@@ -1,4 +1,4 @@
-package com.kitshaar.edu_track.school.Dto;
+package com.kitshaar.edu_track.school.Dto.registers;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;

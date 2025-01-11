@@ -1,7 +1,7 @@
 package com.kitshaar.edu_track.school.services;
 
-import com.kitshaar.edu_track.school.Dto.GetRegisterDto;
-import com.kitshaar.edu_track.school.Dto.RegisterDto;
+import com.kitshaar.edu_track.school.Dto.registers.GetRegisterDto;
+import com.kitshaar.edu_track.school.Dto.registers.RegisterDto;
 import com.kitshaar.edu_track.school.mappers.GetMapping;
 import com.kitshaar.edu_track.school.mappers.InsertMapping;
 import com.kitshaar.edu_track.school.models.ClassTable;
@@ -116,7 +116,7 @@ class RegisterServiceTest {
     }
 
     @Test
-    void getAllRegisters_emptyList() throws Exception {
+    void getAllRegisters_emptyList()  {
         // Mock empty list of registers
         List<Register> registers = new ArrayList<>();
 
@@ -138,7 +138,7 @@ class RegisterServiceTest {
     }
 
     @Test
-    void getAllRegisters_exception() throws Exception {
+    void getAllRegisters_exception() {
         // Mock the repository to throw an exception
         when(registerRepo.findAllWithClassTable()).thenThrow(new RuntimeException("Database error"));
 
@@ -191,7 +191,7 @@ class RegisterServiceTest {
     }
 
     @Test
-    void getRegister_notFound() throws Exception {
+    void getRegister_notFound() {
         // Mock the repository call to return an empty Optional (register not found)
         when(registerRepo.findById(1L)).thenReturn(Optional.empty());
 
@@ -206,7 +206,7 @@ class RegisterServiceTest {
     }
 
     @Test
-    void getRegister_exception() throws Exception {
+    void getRegister_exception() {
         // Mock the repository to throw an exception when finding by ID
         when(registerRepo.findById(1L)).thenThrow(new RuntimeException("Unexpected error"));
 
@@ -257,7 +257,7 @@ class RegisterServiceTest {
     }
 
     @Test
-    void addRegister_invalidClassId() throws Exception {
+    void addRegister_invalidClassId() {
         // Mock the RegisterDto
         RegisterDto registerDto = RegisterDto.builder()
                 .classId(99L) // Invalid class ID
@@ -286,7 +286,7 @@ class RegisterServiceTest {
         Mockito.verify(classTableRepo).findById(99L);
     }
     @Test
-    void addRegister_optimisticLockingFailure() throws Exception {
+    void addRegister_optimisticLockingFailure()  {
         // Mock the RegisterDto and ClassTable entity
         RegisterDto registerDto = RegisterDto.builder()
                 .classId(1L)
@@ -325,7 +325,7 @@ class RegisterServiceTest {
     }
 
     @Test
-    void addRegister_exception() throws Exception {
+    void addRegister_exception() {
         // Mock the RegisterDto and ClassTable entity
         RegisterDto registerDto = RegisterDto.builder()
                 .classId(1L)
@@ -361,6 +361,192 @@ class RegisterServiceTest {
         // Verify the repository method was called
         Mockito.verify(classTableRepo).findById(1L);
         Mockito.verify(registerRepo).save(Mockito.any(Register.class));
+    }
+
+
+    @Test
+    void update_success() throws Exception {
+        // Mock the ID and RegisterDto
+        Long id = 1L;
+        RegisterDto registerDto = RegisterDto.builder()
+                .classId(2L)
+                .name("Updated Kartik")
+                .fatherName("Updated Sharma ji")
+                .motherName("Updated Mrs. Sharma ji")
+                .phone("1234567891")
+                .altPhone("0987654322")
+                .email("updated.john.doe@example.com")
+                .address("456 Main St")
+                .build();
+
+        // Mock the existing Register entity
+        Register existingRegister = Register.builder()
+                .id(1L)
+                .name("Kartik")
+                .fName("Sharma ji")
+                .mName("Mrs. Sharma ji")
+                .phone("1234567890")
+                .altPhone("0987654321")
+                .email("john.doe@example.com")
+                .address("123 Main St")
+                .classTable(ClassTable.builder().classId(1L).className("Old Class").build())
+                .build();
+
+        // Mock the updated ClassTable entity
+        ClassTable updatedClassTable = ClassTable.builder()
+                .classId(2L)
+                .className("Updated Class")
+                .build();
+
+        // Mock repository calls
+        when(registerRepo.findById(id)).thenReturn(Optional.of(existingRegister));
+        when(classTableRepo.findById(2L)).thenReturn(Optional.of(updatedClassTable));
+
+        // Call the method to test
+        ResponseEntity<String> response = service.update(id, registerDto);
+
+        // Assert the response status is OK
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        // Assert the response body contains the success message
+        assertEquals("Register record updated successfully", response.getBody());
+
+        // Verify the updated Register entity
+        assertEquals("Updated Kartik", existingRegister.getName());
+        assertEquals("Updated Sharma ji", existingRegister.getFName());
+        assertEquals("Updated Mrs. Sharma ji", existingRegister.getMName());
+        assertEquals("1234567891", existingRegister.getPhone());
+        assertEquals("0987654322", existingRegister.getAltPhone());
+        assertEquals("updated.john.doe@example.com", existingRegister.getEmail());
+        assertEquals("456 Main St", existingRegister.getAddress());
+        assertEquals(updatedClassTable, existingRegister.getClassTable());
+
+        // Verify the repository methods were called
+        Mockito.verify(registerRepo).findById(id);
+        Mockito.verify(classTableRepo).findById(2L);
+        Mockito.verify(registerRepo).save(existingRegister);
+    }
+
+    @Test
+    void update_invalidIdProvided() {
+        // Mock an invalid ID
+        Long id = null;
+        RegisterDto registerDto = RegisterDto.builder().build(); // Minimal DTO for the test
+
+        // Call the method to test
+        ResponseEntity<String> response = service.update(id, registerDto);
+
+        // Assert the response status is BAD_REQUEST
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+
+        // Assert the response body contains the error message
+        assertEquals("Invalid ID provided", response.getBody());
+
+        // Verify that no repository methods were called
+        Mockito.verifyNoInteractions(registerRepo, classTableRepo);
+    }
+
+    @Test
+    void update_registerNotFound() {
+        // Mock a valid ID and RegisterDto
+        Long id = 1L;
+        RegisterDto registerDto = RegisterDto.builder().build(); // Minimal DTO for the test
+
+        // Mock repository behavior
+        when(registerRepo.findById(id)).thenReturn(Optional.empty());
+
+        // Call the method to test
+        ResponseEntity<String> response = service.update(id, registerDto);
+
+        // Assert the response status is NOT_FOUND
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+
+        // Assert the response body contains the error message
+        assertEquals("Register record with ID " + id + " not found", response.getBody());
+
+        // Verify the repository method was called
+        Mockito.verify(registerRepo).findById(id);
+        Mockito.verifyNoMoreInteractions(registerRepo, classTableRepo);
+    }
+
+    @Test
+    void update_invalidClassIdProvided() {
+        // Mock a valid ID and RegisterDto with an invalid class ID
+        Long id = 1L;
+        RegisterDto registerDto = RegisterDto.builder()
+                .classId(99L) // Non-existent class ID
+                .build();
+
+        // Mock existing Register entity
+        Register existingRegister = Register.builder().id(id).build();
+
+        // Mock repository behavior
+        when(registerRepo.findById(id)).thenReturn(Optional.of(existingRegister));
+        when(classTableRepo.findById(99L)).thenReturn(Optional.empty());
+
+        // Call the method to test
+        ResponseEntity<String> response = service.update(id, registerDto);
+
+        // Assert the response status is BAD_REQUEST
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+
+        // Assert the response body contains the error message
+        assertTrue(response.getBody().contains("Invalid class ID"));
+
+        // Verify the repository methods were called
+        Mockito.verify(registerRepo).findById(id);
+        Mockito.verify(classTableRepo).findById(99L);
+        Mockito.verifyNoMoreInteractions(registerRepo);
+    }
+
+    @Test
+    void update_optimisticLockingConflict() {
+        // Mock a valid ID and RegisterDto
+        Long id = 1L;
+        RegisterDto registerDto = RegisterDto.builder().build();
+
+        // Mock existing Register entity
+        Register existingRegister = Register.builder().id(id).build();
+
+        // Mock repository behavior
+        when(registerRepo.findById(id)).thenReturn(Optional.of(existingRegister));
+        when(registerRepo.save(existingRegister)).thenThrow(OptimisticLockingFailureException.class);
+
+        // Call the method to test
+        ResponseEntity<String> response = service.update(id, registerDto);
+
+        // Assert the response status is CONFLICT
+        assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
+
+        // Assert the response body contains the error message
+        assertEquals("Entity version mismatch", response.getBody());
+
+        // Verify the repository methods were called
+        Mockito.verify(registerRepo).findById(id);
+        Mockito.verify(registerRepo).save(existingRegister);
+    }
+
+    @Test
+    void update_unexpectedError() {
+        // Mock a valid ID and RegisterDto
+        Long id = 1L;
+        RegisterDto registerDto = RegisterDto.builder().build();
+
+        // Mock repository behavior
+        when(registerRepo.findById(id)).thenThrow(new RuntimeException("Unexpected error"));
+
+        // Call the method to test
+        ResponseEntity<String> response = service.update(id, registerDto);
+
+        // Assert the response status is INTERNAL_SERVER_ERROR
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+
+        // Assert the response body contains the generic error message
+        assertEquals("An error occurred while updating the register", response.getBody());
+
+        // Verify the repository method was called
+        Mockito.verify(registerRepo).findById(id);
+        Mockito.verifyNoInteractions(classTableRepo);
     }
 
 
