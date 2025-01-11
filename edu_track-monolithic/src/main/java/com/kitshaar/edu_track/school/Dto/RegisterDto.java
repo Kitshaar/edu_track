@@ -21,11 +21,11 @@ public class RegisterDto {
 
     @NotNull(message = "Father's name is required")
     @Size(min = 1, message = "Father's name cannot be empty")
-    private String fName;
+    private String fatherName;
 
     @NotNull(message = "Mother's name is required")
     @Size(min = 1, message = "Mother's name cannot be empty")
-    private String mName;
+    private String motherName;
 
     @NotNull(message = "Phone number is required")
     @Size(min = 10, max = 10, message = "Phone number must be 10 digits")

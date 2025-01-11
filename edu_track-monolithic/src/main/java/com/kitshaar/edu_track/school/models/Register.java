@@ -46,7 +46,7 @@ public class Register {
     @Column(name = "address", nullable = false)
     private String address;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "class_id", nullable = false) // Foreign Key to ClassTable
+    @JoinColumn(name = "class_id", nullable = false, foreignKey = @ForeignKey(name = "FK_classTable_class")) // Foreign Key to ClassTable
     private ClassTable classTable;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     @Column(name = "created_at", updatable = false)
