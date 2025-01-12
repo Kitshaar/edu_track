@@ -64,7 +64,7 @@ class RegisterServiceTest {
     }
 
     @Test
-    void getAllRegisters_success() throws Exception {
+    void getAllRegisters_success() {
         // mock list of registers
         List<Register> registers = List.of(
                 Register.builder()
@@ -158,7 +158,7 @@ class RegisterServiceTest {
 
 
     @Test
-    void getRegister_success() throws Exception {
+    void getRegister_success()  {
         // Mock register data
         Register register = Register.builder()
                 .id(1L)
@@ -221,7 +221,7 @@ class RegisterServiceTest {
     }
 
     @Test
-    void addRegister_success() throws Exception {
+    void addRegister_success() {
         // Mock the RegisterDto and ClassTable entity
         RegisterDto registerDto = RegisterDto.builder()
                 .classId(1L)
@@ -365,7 +365,7 @@ class RegisterServiceTest {
 
 
     @Test
-    void update_success() throws Exception {
+    void update_success()  {
         // Mock the ID and RegisterDto
         Long id = 1L;
         RegisterDto registerDto = RegisterDto.builder()
@@ -549,5 +549,89 @@ class RegisterServiceTest {
         Mockito.verifyNoInteractions(classTableRepo);
     }
 
+
+    @Test
+    void deleteRegister_invalidIdProvided() {
+        // Mock an invalid ID
+        Long id = null;
+
+        // Call the method to test
+        ResponseEntity<String> response = service.deleteRegister(id);
+
+        // Assert the response status is BAD_REQUEST
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+
+        // Assert the response body contains the error message
+        assertEquals("Invalid ID provided", response.getBody());
+
+        // Verify that no repository methods were called
+        Mockito.verifyNoInteractions(registerRepo);
+    }
+
+    @Test
+    void deleteRegister_registerNotFound() {
+        // Mock a valid ID
+        Long id = 1L;
+
+        // Mock repository behavior
+        when(registerRepo.existsById(id)).thenReturn(false);
+
+        // Call the method to test
+        ResponseEntity<String> response = service.deleteRegister(id);
+
+        // Assert the response status is NOT_FOUND
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+
+        // Assert the response body contains the error message
+        assertEquals("Register record not found", response.getBody());
+
+        // Verify the repository methods were called
+        Mockito.verify(registerRepo).existsById(id);
+        Mockito.verifyNoMoreInteractions(registerRepo);
+    }
+
+    @Test
+    void deleteRegister_success() {
+        // Mock a valid ID
+        Long id = 1L;
+
+        // Mock repository behavior
+        when(registerRepo.existsById(id)).thenReturn(true);
+
+        // Call the method to test
+        ResponseEntity<String> response = service.deleteRegister(id);
+
+        // Assert the response status is OK
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        // Assert the response body contains the success message
+        assertEquals("Register record deleted successfully", response.getBody());
+
+        // Verify the repository methods were called
+        Mockito.verify(registerRepo).existsById(id);
+        Mockito.verify(registerRepo).deleteById(id);
+    }
+
+    @Test
+    void deleteRegister_unexpectedError() {
+        // Mock a valid ID
+        Long id = 1L;
+
+        // Mock repository behavior
+        when(registerRepo.existsById(id)).thenThrow(new RuntimeException("Unexpected error"));
+
+        // Call the method to test
+        ResponseEntity<String> response = service.deleteRegister(id);
+
+        // Assert the response status is INTERNAL_SERVER_ERROR
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+
+        // Assert the response body contains the generic error message
+        assertEquals("Error while deleting register record", response.getBody());
+
+        // Verify the repository methods were called
+        Mockito.verify(registerRepo).existsById(id);
+        Mockito.verifyNoMoreInteractions(registerRepo);
+    }
 
 }

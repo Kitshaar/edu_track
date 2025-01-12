@@ -167,4 +167,23 @@ public class RegisterService {
         }
     }
 
+    @Transactional(transactionManager = "schoolTransactionManager")
+    public ResponseEntity<String> deleteRegister(Long id) {
+
+        if(id == null || id < 1L)
+        {
+            logger.error("Invalid ID: {}", id);
+            return new ResponseEntity<>("Invalid ID provided", HttpStatus.BAD_REQUEST);
+        }
+        try {
+            if (!registerRepo.existsById(id)) {
+                return new ResponseEntity<>("Register record not found", HttpStatus.NOT_FOUND);
+            }
+            registerRepo.deleteById(id);
+            return new ResponseEntity<>("Register record deleted successfully", HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error("Error while deleting register record with id {}: {}", id, e.getMessage(), e);
+            return new ResponseEntity<>("Error while deleting register record", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

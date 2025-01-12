@@ -42,4 +42,10 @@ public class RegisterController {
     {
         return  service.update(id, registerDto);
     }
+
+    @DeleteMapping("/registers/{id}")
+    public ResponseEntity<String> deleteRegister (@PathVariable Long id)
+    {
+        return service.deleteRegister(id);
+    }
 }

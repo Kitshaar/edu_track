@@ -33,7 +33,7 @@ public class ClassTable {
     private List<StudentTable> students;
     @OneToMany(mappedBy = "classTable", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Attendance> attendances ;
-    @OneToMany(mappedBy = "classTable", cascade = CascadeType.ALL, orphanRemoval = true) // One class to many registers
+    @OneToMany(mappedBy = "classTable") // One class to many registers
     private List<Register> registers ;
 
     @Version
