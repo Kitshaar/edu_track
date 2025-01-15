@@ -1,7 +1,9 @@
 package com.kitshaar.edu_track.school.mappers;
 
+import com.kitshaar.edu_track.school.Dto.ParentTableDto;
 import com.kitshaar.edu_track.school.Dto.registers.RegisterDto;
 import com.kitshaar.edu_track.school.models.ClassTable;
+import com.kitshaar.edu_track.school.models.ParentTable;
 import com.kitshaar.edu_track.school.models.Register;
 
 public class InsertMapping {
@@ -24,4 +26,16 @@ public class InsertMapping {
                     .classTable(classTable) // Map the ClassTable entity
                     .build();
         }
+
+    public static ParentTable mapToParent(ParentTableDto parentTableDto)
+    {
+        return ParentTable.builder()
+                .parentId(parentTableDto.getParentId())
+                .name(parentTableDto.getName())
+                .address(parentTableDto.getAddress())
+                .phone(parentTableDto.getPhone())
+                .altPhone(parentTableDto.getAltPhone())
+                .email(parentTableDto.getEmail())
+                .build();
+    }
 }

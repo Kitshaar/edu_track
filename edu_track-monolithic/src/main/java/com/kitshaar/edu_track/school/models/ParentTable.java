@@ -42,4 +42,8 @@ public class ParentTable {
     private String email;
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true) // One parent to many students
     private List<StudentTable> students;
+
+    @Version
+    @Column(name = "version")
+    private Long version;
 }
