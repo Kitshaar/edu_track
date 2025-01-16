@@ -2,9 +2,11 @@ package com.kitshaar.edu_track.school.mappers;
 
 import com.kitshaar.edu_track.school.Dto.ParentTableDto;
 import com.kitshaar.edu_track.school.Dto.registers.RegisterDto;
+import com.kitshaar.edu_track.school.Dto.students.StudentTableDto;
 import com.kitshaar.edu_track.school.models.ClassTable;
 import com.kitshaar.edu_track.school.models.ParentTable;
 import com.kitshaar.edu_track.school.models.Register;
+import com.kitshaar.edu_track.school.models.StudentTable;
 
 public class InsertMapping {
 
@@ -36,6 +38,25 @@ public class InsertMapping {
                 .phone(parentTableDto.getPhone())
                 .altPhone(parentTableDto.getAltPhone())
                 .email(parentTableDto.getEmail())
+                .build();
+    }
+
+    public static StudentTable maptoStudent(StudentTableDto studentTableDto, ClassTable classTable, ParentTable parent )
+    {
+        // Ensure classTable is not null before proceeding
+        if (classTable == null) {
+            throw new IllegalArgumentException("ClassTable cannot be null");
+        }
+        // Ensure parent is not null before proceeding
+        if (parent == null) {
+            throw new IllegalArgumentException("Parent cannot be null");
+        }
+
+        return StudentTable.builder()
+                .studentId(studentTableDto.getStudentId())
+                .name(studentTableDto.getName())
+                .classTable(classTable)
+                .parent(parent)
                 .build();
     }
 }

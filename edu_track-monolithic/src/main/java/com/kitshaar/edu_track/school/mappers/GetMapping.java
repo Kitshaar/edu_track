@@ -2,8 +2,10 @@ package com.kitshaar.edu_track.school.mappers;
 
 import com.kitshaar.edu_track.school.Dto.ParentTableDto;
 import com.kitshaar.edu_track.school.Dto.registers.GetRegisterDto;
+import com.kitshaar.edu_track.school.Dto.students.GetStudentTableDto;
 import com.kitshaar.edu_track.school.models.ParentTable;
 import com.kitshaar.edu_track.school.models.Register;
+import com.kitshaar.edu_track.school.models.StudentTable;
 
 
 public class GetMapping {
@@ -32,6 +34,17 @@ public class GetMapping {
                 .phone(parentTable.getPhone())
                 .altPhone(parentTable.getAltPhone())
                 .email(parentTable.getEmail())
+                .build();
+    }
+
+    public static GetStudentTableDto mapToStudentTableDto(StudentTable student)
+    {
+        return GetStudentTableDto.builder()
+                .studentId(student.getStudentId())
+                .name(student.getName())
+                .parentName(student.getParent() != null ? student.getParent().getName() : null)
+                .className(student.getClassTable() != null ? student.getClassTable().getClassName() : null)
+                .address(student.getParent() != null ? student.getParent().getAddress() : null)
                 .build();
     }
 }

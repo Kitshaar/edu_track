@@ -38,4 +38,11 @@ public class StudentTable {
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "class_id", nullable = false, foreignKey = @ForeignKey(name = "FK_student_class"))
     private ClassTable classTable;
+
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<AttendanceDetail> attendances;
+
+    @Version
+    @Column(name = "version")
+    private Long version;
 }

@@ -1,4 +1,5 @@
 package com.kitshaar.edu_track.school.Dto;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -29,6 +30,7 @@ public class ParentTableDto {
     @Size(min = 10, max = 10, message = "Alternate phone number must be 10 digits")
     private String altPhone;
 
+    @Email
     private String email;
 
 }
