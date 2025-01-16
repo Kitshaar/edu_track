@@ -1,11 +1,17 @@
 package com.kitshaar.edu_track.school.mappers;
 
 import com.kitshaar.edu_track.school.Dto.ParentTableDto;
+
+import com.kitshaar.edu_track.school.Dto.attendanceDetails.GetAttendanceDetailDto;
+
+import com.kitshaar.edu_track.school.Dto.attendances.GetAttendanceDto;
 import com.kitshaar.edu_track.school.Dto.registers.GetRegisterDto;
 import com.kitshaar.edu_track.school.Dto.students.GetStudentTableDto;
-import com.kitshaar.edu_track.school.models.ParentTable;
-import com.kitshaar.edu_track.school.models.Register;
-import com.kitshaar.edu_track.school.models.StudentTable;
+import com.kitshaar.edu_track.school.models.*;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 public class GetMapping {
@@ -45,6 +51,35 @@ public class GetMapping {
                 .parentName(student.getParent() != null ? student.getParent().getName() : null)
                 .className(student.getClassTable() != null ? student.getClassTable().getClassName() : null)
                 .address(student.getParent() != null ? student.getParent().getAddress() : null)
+                .build();
+    }
+
+    public static GetAttendanceDto mapToAttendanceDto(Attendance attendance)
+    {
+        List<GetAttendanceDetailDto> getAttendanceDetailDtoList = new ArrayList<>();
+        if (!attendance.getAttendanceDetails().isEmpty())
+        {
+            getAttendanceDetailDtoList = attendance.getAttendanceDetails()
+                    .stream()
+                    .map(GetMapping::mapToAttendanceDetailDto)
+                    .collect(Collectors.toList());
+        }
+        return GetAttendanceDto.builder()
+                .attendanceId(attendance.getAttendanceId())
+                .date(attendance.getDate())
+                .createdAt(attendance.getCreatedAt())
+                .updatedAt(attendance.getUpdatedAt())
+                .className(attendance.getClassTable() != null ? attendance.getClassTable().getClassName() : null)
+                .attendanceList(getAttendanceDetailDtoList)
+                .build();
+    }
+
+    public static GetAttendanceDetailDto mapToAttendanceDetailDto(AttendanceDetail attendanceDetail)
+    {
+        return GetAttendanceDetailDto.builder()
+                .attendanceDetailId(attendanceDetail.getAttendanceDetailId())
+                .status(attendanceDetail.getStatus())
+                .studentName(attendanceDetail.getStudent() != null ? attendanceDetail.getStudent().getName() : null)
                 .build();
     }
 }

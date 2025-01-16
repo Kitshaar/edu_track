@@ -1,4 +1,4 @@
-package com.kitshaar.edu_track.school.Dto;
+package com.kitshaar.edu_track.school.Dto.attendances;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;

@@ -35,7 +35,7 @@ public class StudentTableService {
     @Autowired
     private ParentTableRepo parentTableRepo;
 
-    private static final Logger logger = LoggerFactory.getLogger(RegisterService.class);
+    private static final Logger logger = LoggerFactory.getLogger(StudentTableService.class);
 
 
 

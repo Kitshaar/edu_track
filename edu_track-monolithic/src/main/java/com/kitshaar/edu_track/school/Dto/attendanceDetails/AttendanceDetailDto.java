@@ -1,4 +1,4 @@
-package com.kitshaar.edu_track.school.Dto;
+package com.kitshaar.edu_track.school.Dto.attendanceDetails;
 
 import com.kitshaar.edu_track.school.models.AttendanceStatus;
 import jakarta.validation.constraints.NotNull;

@@ -1,12 +1,10 @@
 package com.kitshaar.edu_track.school.mappers;
 
 import com.kitshaar.edu_track.school.Dto.ParentTableDto;
+import com.kitshaar.edu_track.school.Dto.attendances.AttendanceDto;
 import com.kitshaar.edu_track.school.Dto.registers.RegisterDto;
 import com.kitshaar.edu_track.school.Dto.students.StudentTableDto;
-import com.kitshaar.edu_track.school.models.ClassTable;
-import com.kitshaar.edu_track.school.models.ParentTable;
-import com.kitshaar.edu_track.school.models.Register;
-import com.kitshaar.edu_track.school.models.StudentTable;
+import com.kitshaar.edu_track.school.models.*;
 
 public class InsertMapping {
 
@@ -57,6 +55,20 @@ public class InsertMapping {
                 .name(studentTableDto.getName())
                 .classTable(classTable)
                 .parent(parent)
+                .build();
+    }
+
+    public static Attendance mapToAttendance(AttendanceDto attendanceDto, ClassTable classTable)
+    {
+        // Ensure classTable is not null before proceeding
+        if (classTable == null) {
+            throw new IllegalArgumentException("ClassTable cannot be null");
+        }
+
+        return Attendance.builder()
+                .attendanceId(attendanceDto.getAttendanceId())
+                .date(attendanceDto.getDate())
+                .classTable(classTable)
                 .build();
     }
 }

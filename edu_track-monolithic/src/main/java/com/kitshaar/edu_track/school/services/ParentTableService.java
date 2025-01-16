@@ -26,7 +26,7 @@ public class ParentTableService {
     private ParentTableRepo parentTableRepo;
     private static final Logger logger = LoggerFactory.getLogger(ParentTableService.class);
 
-    @Transactional(transactionManager = "schoolTransactionManager")
+    @Transactional(transactionManager = "schoolTransactionManager", readOnly = true)
     public ResponseEntity<List<ParentTableDto>> getAllParents() {
         try {
 
@@ -43,7 +43,7 @@ public class ParentTableService {
         }
     }
 
-    @Transactional(transactionManager = "schoolTransactionManager")
+    @Transactional(transactionManager = "schoolTransactionManager", readOnly = true)
     public ResponseEntity<ParentTableDto> getParent(Long id) {
         try {
             return parentTableRepo.findById(id)
