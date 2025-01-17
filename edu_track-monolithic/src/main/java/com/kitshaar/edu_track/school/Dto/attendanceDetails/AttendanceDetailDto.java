@@ -23,6 +23,5 @@ public class AttendanceDetailDto {
     private Long studentId;  // Reference to the StudentTable using studentId.
 
     @NotNull(message = "Attendance status is required. Choose between PRESENT, ABSENT, LATE, EXCUSED, LEAVE")
-    @Size(min = 1, message = "Attendance status cannot be empty")
     private AttendanceStatus status;  // Attendance status (e.g., present, absent).
 }

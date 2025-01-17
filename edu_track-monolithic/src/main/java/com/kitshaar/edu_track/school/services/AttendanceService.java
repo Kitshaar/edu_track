@@ -112,7 +112,7 @@ public class AttendanceService {
             return ResponseEntity.badRequest().body("Invalid Attendance details provided");
         }
         try {
-            Attendance existingAttendance = attendanceRepo.findById(attendanceDto.getAttendanceId()).orElse(null);
+            Attendance existingAttendance = attendanceRepo.findById(id).orElse(null);
 
             if (existingAttendance == null)
             {
@@ -137,15 +137,15 @@ public class AttendanceService {
             return ResponseEntity.ok("Attendance record updated successfully");
 
         } catch (IllegalArgumentException e) {
-            logger.error("Invalid input while updating register with ID {}: {}", id, e.getMessage(), e);
+            logger.error("Invalid input while updating Attendance with ID {}: {}", id, e.getMessage(), e);
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (OptimisticLockingFailureException e) {
-            logger.error("Optimistic locking conflict while updating register with ID {}: {}", id, e.getMessage(), e);
+            logger.error("Optimistic locking conflict while updating Attendance with ID {}: {}", id, e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Entity version mismatch");
         } catch (Exception e) {
-            logger.error("Error while updating register with ID {}: {}", id, e.getMessage(), e);
+            logger.error("Error while updating Attendance with ID {}: {}", id, e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("An error occurred while updating the register");
+                    .body("An error occurred while updating the Attendance");
         }
     }
 
@@ -166,5 +166,6 @@ public class AttendanceService {
         } catch (Exception e) {
             logger.error("Error while deleting Attendance record with id {}: {}", id, e.getMessage(), e);
             return new ResponseEntity<>("Error while deleting Attendance record", HttpStatus.INTERNAL_SERVER_ERROR);
-        }}
+        }
+    }
 }
